@@ -1,0 +1,389 @@
+
+
+/* =========================================
+   1. Reset & Variables (Junsang Theme)
+   ========================================= */
+:root {
+    --bg-color: #f3eee3;         /* 아이보리 배경 */
+    --sidebar-bg: #1a1a1a;       /* 블랙 사이드바 */
+    --accent-color: #ffba3c;     /* 옐로우 포인트 */
+    --card-bg: #ffffff;
+    --text-dark: #333333;
+    --text-grey: #888888;
+    --border-color: #e0e0e0;
+    
+    /* Status Colors */
+    --st-phone: #e74c3c;
+    --st-sleeping: #9b59b6;
+    --st-talking: #f39c12;
+    --st-staring: #3498db;
+    --st-writing: #2ecc71;
+
+    --font-heading: "Bagel Fat One", system-ui;  /* 예: 'Oswald', sans-serif */
+    --font-body: "Roboto", sans-serif;    /* 예: 'Roboto', sans-serif */
+    --number: "Roboto", sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: "Roboto", sans-serif;
+    letter-spacing: 0.5px;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    height: 100vh;
+    overflow: hidden; /* 화면 스크롤 방지 */
+}
+
+/* =========================================
+   2. Layout Structure
+   ========================================= */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+}
+
+.logo-area {
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.jb-logo {
+    width: 48px;
+    height: 48px;
+    background-color: var(--accent-color);
+    color: #000;
+    font-weight: 900;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.company-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #ccc;
+}
+
+.menu-list { list-style: none; }
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #999;
+    font-weight: 500;
+    margin-bottom: 5px;
+    transition: 0.3s;
+}
+.menu-item:hover, .menu-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent-color);
+}
+.menu-item span { font-size: 1.2rem; }
+
+/* Main Content */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 40px;
+    overflow-y: auto; /* 내용 많으면 스크롤 */
+}
+
+/* =========================================
+   3. Header Section
+   ========================================= */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+.top-header h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.sub-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.subject-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+.time-badge {
+    background: #e8e4da;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.time-badge span { font-size: 1rem; }
+
+.live-badge {
+    background-color: #000;
+    color: var(--accent-color);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #ff4d4d;
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+}
+
+/* =========================================
+   4. Control & Stats Section
+   ========================================= */
+.control-stats-section {
+    margin-bottom: 30px;
+}
+.mode-switch-container {
+    margin-bottom: 20px;
+}
+.mode-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+.mode-buttons { display: flex; gap: 10px; }
+.mode-btn {
+    padding: 10px 24px;
+    border: 2px solid #ddd;
+    background: transparent;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.mode-btn.active {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color);
+    color: #000;
+}
+
+.stats-container {
+    display: flex;
+    gap: 20px;
+    
+}
+.stat-box {
+    flex: 1;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.05);
+    text-align: center;
+}
+.stat-title {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 5px;
+
+    font-weight: 600;
+}
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+/* =========================================
+   5. Dashboard Body (Grid & Log)
+   ========================================= */
+.dashboard-body {
+    display: grid;
+    grid-template-columns: 2.2fr 1.2fr; /* 왼쪽(모니터링) 더 크게, 오른쪽(로그)도 충분히 크게 */
+    grid-template-rows: 1fr auto;       /* 위: 본문, 아래: 컨트롤패널 */
+    gap: 30px;
+    flex: 1;
+    align-items: start;
+}
+.student-section {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.log-section {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 360px; /* 로그 영역을 더 크게 확보 (필요시 320~420 조절) */
+}
+
+/* control-panel을 맨 아래로 + 두 칼럼 전체 span */
+.control-panel-bottom {
+    grid-column: 1 / -1; /* 왼쪽~오른쪽 전체 차지 */
+    grid-row: 10;
+}
+
+
+.section-title {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 10px;
+}
+
+/* Student Grid */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.student-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    transition: 0.3s;
+    border: 2px solid transparent; /* 테두리 공간 확보 */
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
+    
+    /* 🔥 [선택] 아까 body에 준 자간(1px)이 카드에는 너무 넓다면 0으로 초기화 */
+    letter-spacing: 0;
+}
+.student-card:hover { transform: translateY(-3px); }
+
+/* 🔥 경고 시 빨간 테두리 */
+.student-card.warning-active {
+    border-color: #ff4d4d;
+    background-color: #fff5f5;
+    animation: shake 0.5s;
+}
+
+/* Card Content */
+.card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.profile-img {
+    width: 45px;
+    height: 45px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+}
+.student-name { font-weight: 700; font-size: 1.05rem; }
+.confidence { font-size: 0.75rem; color: #999; }
+
+.card-mid { margin-bottom: 15px; text-align: center; }
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+/* Card Bottom Stats */
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+.info-pill { text-align: center; flex: 1; }
+.info-pill .label { display: block; font-size: 0.7rem; color: #aaa; margin-bottom: 2px; }
+.info-pill .val { font-weight: 800; font-size: 1rem; }
+.text-red { color: #e74c3c; }
+
+/* Log List */
+.log-container {
+    background: var(--card-bg);
+    border-radius: 16px;
+    height: 500px; /* 고정 높이 */
+    overflow-y: auto;
+    padding: 10px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+}
+.log-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+    animation: slideIn 0.3s;
+}
+.log-time { color: #999; font-size: 0.8rem; font-family: monospace; }
+.log-name { font-weight: 600; }
+.log-status { font-weight: 700; font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; color: #fff; }
+
+/* Utility Classes for Status Colors */
+.status-phone { background-color: var(--st-phone); }
+.status-sleeping { background-color: var(--st-sleeping); }
+.status-talking { background-color: var(--st-talking); }
+.status-staring { background-color: var(--st-staring); }
+.status-writing { background-color: var(--st-writing); }
+
+/* Animations */
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+@keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-2px); } 50% { transform: translateX(2px); } 100% { transform: translateX(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+/* =========================================
+   🔥 Fonts Override (제목 폰트 적용)
+   ========================================= */
+
+/* 1. 제일 큰 제목 (Engagement Checker) */
+.top-header h1 {
+    font-family: var(--font-heading) !important;
+    letter-spacing: 2px; /* 제목이라 자간 살짝 조정 (선택사항) */
+}
+
+/* 2. 섹션 제목 (Student Monitoring, Detection Log) */
+.section-title {
+    font-family: var(--font-heading) !important;
+    letter-spacing: 1px;
+}
+
+/* (옵션) 숫자 통계도 제목 폰트로 하면 예쁩니다. 싫으면 이 부분은 지우세요. */
+.stat-value {
+    font-family: var(--number) !important;
+    letter-spacing: 1px;
+}
