@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JB Engagement Checker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Serif+Text:ital@0;1&family=Limelight&family=TASA+Explorer:wght@400..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
+    <style>
+        /* 기본 레이아웃 스타일 */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; padding: 20px; }
+        .student-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; border: 2px solid transparent; }
+        
+        /* 🔥 경고 상태일 때 빨간 테두리 */
+        .warning-active { border: 3px solid #ff4444 !important; background-color: #fff0f0; transform: scale(1.02); }
+        
+        /* 뱃지 스타일 */
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9em; }
+        .status-phone { background-color: #ffcccc; color: #cc0000; }
+        .status-sleeping { background-color: #e0e0e0; color: #555; }
+        .status-writing { background-color: #ccffcc; color: #006600; }
+        .status-talking { background-color: #fff4cc; color: #996600; }
+        
+        .card-top { display: flex; align-items: center; margin-bottom: 10px; }
+        .profile-img { width: 40px; height: 40px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; }
+        .student-name { font-weight: bold; font-size: 1.1em; }
+        .confidence { font-size: 0.8em; color: #888; }
+        .card-bottom { display: flex; justify-content: space-between; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .info-pill { display: flex; flex-direction: column; align-items: center; }
+        .label { font-size: 0.7em; color: #aaa; }
+        .val { font-weight: bold; }
+        .text-red { color: red; }
+
+        /* 🔥 [컨트롤 패널] 토글 스위치 및 버튼 스타일 */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px; /* 버튼과 스위치 사이 간격 */
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        /* 토글 스위치 디자인 */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px; width: 26px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #ff4757; } /* ON일 때 빨간색 */
+        input:focus + .slider { box-shadow: 0 0 1px #ff4757; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .switch-label { font-weight: bold; color: #555; font-size: 1.1em; }
+
+        /* 리셋 버튼 */
+        .reset-btn {
+            background-color: #ffba3c;
+            color: white;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(225, 214, 65, 0.4);
+            transition: transform 0.1s;
+        }
+        .reset-btn:active { transform: scale(0.95); }
+        .reset-btn:hover { background-color: #e9aa36; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="logo-area">
+                <div class="jb-logo">JB</div>
+                <div class="company-name">Jun's<br>Berry Company</div>
+            </div>
+            <ul class="menu-list">
+                <li class="menu-item active"><span class="material-symbols-outlined">dashboard</span> Dashboard</li>
+                <li class="menu-item"><span class="material-symbols-outlined">calendar_today</span> Calendar</li>
+                <li class="menu-item"><span class="material-symbols-outlined">settings</span> Setting</li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>Engagement Checker</h1>
+                    <div class="sub-info">
+                        <span class="subject-name">Algorithmic, Computational & Data Thinking</span>
+                        <div class="time-badge">
+                            <span class="material-symbols-outlined">schedule</span>
+                            9:00 - 12:00 \ 2025.12.15.
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="live-badge">
+                        <span class="pulse-dot"></span> LIVE
+                    </div>
+                </div>
+            </header>
+
+            <section class="control-stats-section">
+                <div class="mode-switch-container">
+                    <label class="mode-label">Class Mode</label>
+                    <div class="mode-buttons">
+                        <button class="mode-btn active" onclick="setMode('Lecture')">Lecture Time</button>
+                        <button class="mode-btn" onclick="setMode('Active')">Active Learning</button>
+                    </div>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-title">Attentive / Current</div>
+                        <div class="stat-value" id="stat-attendance">0 / 0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">Alerts Today</div>
+                        <div class="stat-value" id="stat-alerts">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">Active Learning (min)</div>
+                        <div class="stat-value">45</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dashboard-body">
+
+                <!-- 1) 왼쪽: Student Monitoring -->
+                <div class="student-section">
+                    <h3 class="section-title">Student Monitoring</h3>
+                    <div id="student-grid" class="grid-container"></div>
+                </div>
+
+                <!-- 2) 오른쪽: Detection Log -->
+                <aside class="log-section">
+                    <h3 class="section-title">Detection Log</h3>
+                    <div class="log-container">
+                    <div id="detection-log-list" class="log-list"></div>
+                    </div>
+                </div>
+            </section>
+
+                <!-- 3) 아래로 내릴 라즈베리파이 컨트롤 -->
+                <div class="control-panel control-panel-bottom">
+                    <div class="switch-container">
+                        <span class="switch-label">Robot Auto-Deploy </span>
+                        <label class="switch">
+                            <input type="checkbox" id="robotToggle" onchange="toggleRobotMode()">
+                            <span class="slider round"></span>
+                        </label>
+                        <span id="toggleStatus" style="font-size: 0.9em; color: #888;">(OFF)</span>
+                    </div>
+
+                    <div style="width: 1px; height: 10px; background: #ddd;"></div>
+
+                    <button onclick="resetServer()" class="reset-btn">
+                    Clearing(Reset)
+                    </button>
+                </div>
+
+                </div>
+
+        </main>
+    </div>
+
+    <script>
+        // =========================================================
+        // 1. 전역 변수 및 설정
+        // =========================================================
+        let currentMode = 'Lecture';
+        let isRobotEnabled = false; // 🔥 로봇 출동 허용 여부 (기본값: OFF)
+        const stateTracker = {}; 
+        let totalAlerts = 0; 
+
+        // =========================================================
+        // 2. 컨트롤 함수 (토글 및 초기화)
+        // =========================================================
+        
+        // (1) 토글 스위치 변경 시 실행
+        function toggleRobotMode() {
+            const toggle = document.getElementById('robotToggle');
+            const label = document.getElementById('toggleStatus');
+            isRobotEnabled = toggle.checked;
+            
+            if (isRobotEnabled) {
+                label.innerText = "(ON)";
+                label.style.color = "#ff4757";
+                label.style.fontWeight = "bold";
+                console.log("🔔 로봇 자동 출동 모드: ON");
+            } else {
+                label.innerText = "(OFF)";
+                label.style.color = "#888";
+                label.style.fontWeight = "normal";
+                console.log("🔕 로봇 자동 출동 모드: OFF");
+            }
+        }
+
+        // (2) 상황 종료 및 초기화
+        async function resetServer() {
+            if(!confirm("상황을 종료하고 로봇을 복귀시키겠습니까?")) return;
+
+            try {
+                const res = await fetch('/reset', { method: 'POST' });
+                const data = await res.json();
+                alert("🧹 상황 종료 완료!");
+                location.reload(); 
+            } catch (err) {
+                alert("❌ 초기화 실패: " + err);
+            }
+        }
+
+        // =========================================================
+        // 3. 핵심 통신 함수
+        // =========================================================
+        
+        // 자동 경고 전송 (3초 룰 -> 토글 확인 -> 서버 전송)
+        async function sendSignalServer(name, status) {
+            // 🔥 [핵심] 스위치가 켜져있을 때만 서버로 전송!
+            if (!isRobotEnabled) {
+                console.log(`🚫 [SKIP] ${name} 경고 감지되었으나, 로봇 출동이 꺼져있음.`);
+                return; 
+            }
+
+            console.log(`📡 [ALERT] ${name} (${status}) 경고 전송 (로봇 출동)!`);
+            try {
+                await fetch('/alert', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ name: name, status: status })
+                });
+            } catch(e) {
+                console.error("❌ 통신 실패:", e);
+            }
+        }
+
+        // =========================================================
+        // 4. 모드 및 집중도 판단 로직
+        // =========================================================
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                if(btn.textContent.includes(mode)) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        function isFocused(status) {
+            const s = status.toLowerCase();
+            if (currentMode === 'Lecture') {
+                return (s === 'writing' || s === 'staring'); 
+            } else {
+                return (s === 'writing' || s === 'talking');
+            }
+        }
+
+        // =========================================================
+        // 5. 데이터 조회 및 메인 루프
+        // =========================================================
+        async function fetchStatus() {
+            try {
+                const response = await fetch('/monitor'); 
+                const data = await response.json();
+                
+                updateDashboard(data);      
+                checkAttentionLogic(data);  
+                
+            } catch (error) {
+                console.error("Fetch Error:", error);
+            }
+        }
+
+        // 3초 지속 감지 및 경고 로직
+        function checkAttentionLogic(data) {
+            const now = Date.now();
+            let attentiveCount = 0;
+            const totalStudents = Object.keys(data).length;
+
+            for (const [name, info] of Object.entries(data)) {
+                const currentStatus = info.status.toLowerCase();
+                const focused = isFocused(currentStatus);
+
+                if(focused) attentiveCount++;
+
+                if (!stateTracker[name]) {
+                    stateTracker[name] = { 
+                        status: currentStatus, 
+                        startTime: now, 
+                        warned: false,
+                        alertCount: 0,
+                        streak: 0 
+                    };
+                }
+                
+                const tracker = stateTracker[name];
+
+                if (tracker.status !== currentStatus) {
+                    tracker.status = currentStatus;
+                    tracker.startTime = now;
+                    tracker.warned = false; 
+                    
+                    const card = document.getElementById(`card-${name}`);
+                    if(card) card.classList.remove('warning-active');
+
+                } else {
+                    if (!focused) {
+                        const duration = now - tracker.startTime;
+                        
+                        // 🔥 3초 초과 시
+                        if (duration > 3000) {
+                            if (!tracker.warned) {
+                                tracker.warned = true; 
+                                tracker.alertCount++;
+                                tracker.streak++;
+                                totalAlerts++;
+                                
+                                addLog(name, info.status); 
+                                updateStats(); 
+                                
+                                // 🔥 서버로 경고 전송 (내부에서 토글 스위치 확인함)
+                                sendSignalServer(name, info.status);
+                            }
+                            
+                            // (토글과 상관없이) 화면에는 항상 빨간불 표시
+                            const card = document.getElementById(`card-${name}`);
+                            if(card) card.classList.add('warning-active');
+                        }
+                    } else {
+                        const card = document.getElementById(`card-${name}`);
+                        if(card) card.classList.remove('warning-active');
+                    }
+                }
+            }
+            document.getElementById('stat-attendance').innerText = `${attentiveCount} / ${totalStudents}`;
+        }
+
+        // =========================================================
+        // 6. UI 업데이트
+        // =========================================================
+        function updateStats() {
+            document.getElementById('stat-alerts').innerText = totalAlerts;
+        }
+
+        function addLog(name, status) {
+            const list = document.getElementById('detection-log-list');
+            const timeStr = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+            
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            item.style.padding = "5px";
+            item.style.borderBottom = "1px solid #eee";
+            item.innerHTML = `
+                <span style="color:#888; font-size:0.8em; margin-right:5px;">${timeStr}</span>
+                <strong>${name}</strong>
+                <span class="status-badge status-${status.toLowerCase()}">${status}</span>
+            `;
+            list.prepend(item);
+        }
+
+        function updateDashboard(data) {
+            const grid = document.getElementById('student-grid');
+
+            for (const [name, info] of Object.entries(data)) {
+                let card = document.getElementById(`card-${name}`);
+                const tracker = stateTracker[name] || { alertCount: 0, streak: 0 };
+                
+                const content = `
+                    <div class="card-top">
+                        <div class="profile-img">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div class="student-info">
+                            <div class="student-name">${name}</div>
+                            <div class="confidence">Accuracy: ${info.prob}</div>
+                        </div>
+                    </div>
+                    <div class="card-mid">
+                        <span class="status-badge status-${info.status.toLowerCase()}">${info.status}</span>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="info-pill">
+                            <span class="label">Warnings</span>
+                            <span class="val">${tracker.alertCount}</span>
+                        </div>
+                        <div class="info-pill">
+                            <span class="label">Streak</span>
+                            <span class="val text-red">${tracker.streak}</span>
+                        </div>
+                    </div>
+                `;
+
+                if (!card) {
+                    card = document.createElement('div');
+                    card.id = `card-${name}`;
+                    card.className = 'student-card';
+                    grid.appendChild(card);
+                }
+                
+                if (card.innerHTML !== content) {
+                     card.innerHTML = content;
+                }
+            }
+        }
+
+        setInterval(fetchStatus, 1000);
+        fetchStatus(); 
+    </script>
+</body>
+</html>
