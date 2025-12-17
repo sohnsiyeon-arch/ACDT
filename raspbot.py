@@ -17,7 +17,7 @@ SERVER_URL = f"http://{server_ip}:8000/raspbot"
 SERVER_CLEAR_URL = f"http://{server_ip}:8000/alert"
 
 student_num = {
-    "Junsang Park": 1,  # A 위치
+    "Junsang Park": 1,  # A 위치, 이름은 학생 웹이랑 일치해야 함. 
     "Siyeon Sohn": 2    # B 위치
 }
 
@@ -74,7 +74,7 @@ def line_tracking(duration=3):
 
 # [시나리오 1] 준상이가 문제일 때
 def move_A_to_B():
-    print("🚗 Moving A -> B")
+    print("Moving A -> B")
     line_tracking(5)
     
     for x in range(3):
@@ -100,7 +100,7 @@ def move_A_to_B():
 
 # [시나리오 2] 시연이가 문제일 때
 def move_B_to_A():
-    print("🚗 Moving B -> A")
+    print("Moving B -> A")
     line_tracking(5)
     
     for x in range(3):
@@ -126,7 +126,7 @@ def move_B_to_A():
 
 # [시나리오 3] 제자리 경고 (A->A 또는 B->B)
 def warn_in_place():
-    print("🚗 Moving B -> A")
+    print("Moving B -> A")
     # 시작 동작 (B->A 코드 참조)
     move_backward(10)
     time.sleep(0.5)
@@ -151,7 +151,7 @@ def warn_in_place():
 # ==========================================
 # 4. 메인 실행 루프
 # ==========================================
-print(f"🤖 Raspbot 가동 시작! (초기 위치: {current_robot_pos})")
+print(f"Raspbot 가동 시작 (초기 위치: {current_robot_pos})")
 
 try:
     while True:
@@ -175,7 +175,7 @@ try:
                     last_known_status[name] = current_status
                     print(f"\n👀 [감지] {name} -> {current_status}")
 
-                # 🔥 나쁜 행동 감지 시 출동
+                # 나쁜 행동 감지 시 출동
                 if current_status in ['phone', 'sleeping', 'staring', 'talking']:
                     
                     target_pos = student_num.get(name, 0)
@@ -198,7 +198,7 @@ try:
                             # 같은 위치거나 (1->1, 2->2) 그 외 -> 제자리 경고
                             warn_in_place()
                         
-                        print(f"   📍 현재 로봇 위치: {current_robot_pos}")
+                        print(f"   현재 로봇 위치: {current_robot_pos}")
                         
                         # --- 경고 삭제 및 기억 리셋 ---
                         try:
@@ -222,4 +222,5 @@ except KeyboardInterrupt:
     print("프로그램 종료")
     stop()
     if 'bot' in globals():
+
         del bot
