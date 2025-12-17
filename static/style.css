@@ -6,7 +6,7 @@
 :root {
     --bg-color: #f3eee3;         /* 아이보리 배경 */
     --sidebar-bg: #1a1a1a;       /* 블랙 사이드바 */
-    --accent-color: #ffba3c;     /* 옐로우 포인트 */
+    --accent-color: #ffba3c;     /* 옐로우 포인트 색 지정 */
     --card-bg: #ffffff;
     --text-dark: #333333;
     --text-grey: #888888;
@@ -19,7 +19,7 @@
     --st-staring: #3498db;
     --st-writing: #2ecc71;
 
-    --font-heading: "Bagel Fat One", system-ui;  /* 예: 'Oswald', sans-serif */
+    --font-heading: "Bagel Fat One", system-ui;  /* 여기다가 넣을 폰트 이름이랑/ html도 업뎃해야 함함 */
     --font-body: "Roboto", sans-serif;    /* 예: 'Roboto', sans-serif */
     --number: "Roboto", sans-serif;
 }
@@ -386,4 +386,5 @@ body {
 .stat-value {
     font-family: var(--number) !important;
     letter-spacing: 1px;
+
 }
