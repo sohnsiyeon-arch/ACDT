@@ -15,7 +15,7 @@
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; padding: 20px; }
         .student-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; border: 2px solid transparent; }
         
-        /* 🔥 경고 상태일 때 빨간 테두리 */
+        /* 경고 상태일 때 빨간 테두리 */
         .warning-active { border: 3px solid #ff4444 !important; background-color: #fff0f0; transform: scale(1.02); }
         
         /* 뱃지 스타일 */
@@ -35,7 +35,7 @@
         .val { font-weight: bold; }
         .text-red { color: red; }
 
-        /* 🔥 [컨트롤 패널] 토글 스위치 및 버튼 스타일 */
+        /* [컨트롤 패널] 토글 스위치 및 버튼 스타일 */
         .control-panel {
             display: flex;
             justify-content: center;
@@ -175,7 +175,7 @@
                 </div>
             </section>
 
-                <!-- 3) 아래로 내릴 라즈베리파이 컨트롤 -->
+                <!-- 3) 라즈베리파이 컨트롤
                 <div class="control-panel control-panel-bottom">
                     <div class="switch-container">
                         <span class="switch-label">Robot Auto-Deploy </span>
@@ -203,7 +203,7 @@
         // 1. 전역 변수 및 설정
         // =========================================================
         let currentMode = 'Lecture';
-        let isRobotEnabled = false; // 🔥 로봇 출동 허용 여부 (기본값: OFF)
+        let isRobotEnabled = false; // 로봇 출동 허용 여부 (기본값은 오프임)
         const stateTracker = {}; 
         let totalAlerts = 0; 
 
@@ -226,7 +226,7 @@
                 label.innerText = "(OFF)";
                 label.style.color = "#888";
                 label.style.fontWeight = "normal";
-                console.log("🔕 로봇 자동 출동 모드: OFF");
+                console.log("로봇 자동 출동 모드: OFF");
             }
         }
 
@@ -237,10 +237,10 @@
             try {
                 const res = await fetch('/reset', { method: 'POST' });
                 const data = await res.json();
-                alert("🧹 상황 종료 완료!");
+                alert("상황 종료 완료!");
                 location.reload(); 
             } catch (err) {
-                alert("❌ 초기화 실패: " + err);
+                alert("초기화 실패: " + err);
             }
         }
 
@@ -250,9 +250,9 @@
         
         // 자동 경고 전송 (3초 룰 -> 토글 확인 -> 서버 전송)
         async function sendSignalServer(name, status) {
-            // 🔥 [핵심] 스위치가 켜져있을 때만 서버로 전송!
+            //  [핵심] 스위치가 켜져있을 때만 서버로 전송!
             if (!isRobotEnabled) {
-                console.log(`🚫 [SKIP] ${name} 경고 감지되었으나, 로봇 출동이 꺼져있음.`);
+                console.log(` [SKIP] ${name} 경고 감지되었으나, 로봇 출동이 꺼져있음.`);
                 return; 
             }
 
@@ -340,7 +340,7 @@
                     if (!focused) {
                         const duration = now - tracker.startTime;
                         
-                        // 🔥 3초 초과 시
+                        // 3초룰
                         if (duration > 3000) {
                             if (!tracker.warned) {
                                 tracker.warned = true; 
@@ -351,7 +351,7 @@
                                 addLog(name, info.status); 
                                 updateStats(); 
                                 
-                                // 🔥 서버로 경고 전송 (내부에서 토글 스위치 확인함)
+                                // 서버로 경고 전송 (내부에서 토글 스위치 확인함)
                                 sendSignalServer(name, info.status);
                             }
                             
@@ -440,4 +440,5 @@
         fetchStatus(); 
     </script>
 </body>
+
 </html>
