@@ -31,30 +31,28 @@ student_name = st.sidebar.text_input("Student Name", value="Student 1")
 
 # student1.py 파일의 2. 사이드바 설정 부분에 추가
 
-# 🔥 [추가] 이전 이름을 저장할 세션 상태 변수
+# 이전 이름을 저장할 세션 상태 변수
 if 'last_name' not in st.session_state:
     st.session_state.last_name = None
 
 # 서버 주소 설정 (CLEAR용)
 CLEAR_URL = f'http://{server_ip}:8000/monitor'
 
-# 🔥 [추가] 이름 변경 감지 및 이전 데이터 삭제 로직
+# 이름 변경 감지 및 이전 데이터 삭제 로직
 if st.session_state.last_name and st.session_state.last_name != student_name:
     # 이전 이름이 있고, 현재 이름과 다르면
     try:
         old_name = st.session_state.last_name
         # 서버에 DELETE 요청!
         requests.delete(f"{CLEAR_URL}/{old_name}", timeout=0.1)
-        st.sidebar.success(f"✅ 이전 데이터 ({old_name}) 삭제 완료")
+        st.sidebar.success(f" 이전 데이터 ({old_name}) 삭제 완료")
     except:
-        st.sidebar.error("❌ 이전 데이터 삭제 실패 (서버 연결 확인)")
+        st.sidebar.error(" 이전 데이터 삭제 실패 (서버 연결 확인)")
 
 # 현재 이름을 다음 실행을 위해 저장
 st.session_state.last_name = student_name
 
-# ... (아래 기존 코드들은 그대로 유지)
-
-# 🔥 [핵심] 서버 주소 설정
+# 서버 주소 설정
 SERVER_URL = f'http://{server_ip}:8000/update'
 st.sidebar.header("Model Settings")
 SEQ_LEN = 10
@@ -79,17 +77,17 @@ def load_all_models():
     try:
         model = joblib.load(os.path.join(base_path, "XGBoost_full35.pkl"))
         le = joblib.load(os.path.join(base_path, "label_encoder.pkl"))
-        print("✅ XGBoost(Full) & LabelEncoder2 로드 완료")
+        print("XGBoost(Full) & LabelEncoder2 로드 완료")
     except Exception as e:
-        st.error(f"❌ 모델 로드 실패: {e}")
+        st.error(f"모델 로드 실패: {e}")
         return None, None, None
 
     # 2. YOLO 로드
     try:
         yolo_model = YOLO('yolov8n.pt')
-        print("✅ YOLO 로드 완료")
+        print("YOLO 로드 완료")
     except Exception as e:
-        st.error(f"❌ YOLO 모델 로드 실패: {e}")
+        st.error(f"YOLO 모델 로드 실패: {e}")
         return None, None, None
 
     return model, le, yolo_model
@@ -97,7 +95,7 @@ def load_all_models():
 model, le, yolo_model = load_all_models()
 
 # ==========================================
-# 4. MediaPipe 및 특징 추출 함수 (v3 Full35)
+# 4. MediaPipe 및 특징 추출 함수!!! 각각 함수 지정해줘야 함. (v3 Full35)
 # ==========================================
 mp_pose = mp.solutions.pose
 mp_face = mp.solutions.face_mesh
@@ -122,7 +120,7 @@ def _safe_std(points):
     if len(points) <= 1: return 0.0
     return float(np.linalg.norm(np.std(points, axis=0)))
 
-# 🔥 [수정] *args 추가하여 에러 방지
+# *args 추가하여 에러 방지
 def calculate_features_v3(buffer_pose, buffer_face, buffer_hands, *args):
     if not buffer_pose:
         return {k: 0.0 for k in ["scale", "gaze_y", "gaze_x", "eye_open", "head_pitch", "head_roll", "mouth_ratio",
@@ -292,7 +290,7 @@ if run and model is not None:
                     confidence = pred_prob[pred_idx] * 100
                     pred_label = le.inverse_transform([pred_idx])[0]
                     
-                    # 🔥 [상세 확률 계산] 딕셔너리로 만듦
+                    # [상세 확률 계산] -> 딕셔너리로 만듦
                     all_probs = {}
                     for i, class_name in enumerate(le.classes_):
                         all_probs[class_name] = round(float(pred_prob[i] * 100), 1)
@@ -312,7 +310,7 @@ if run and model is not None:
                     cv2.putText(frame, f"{status_text} ({conf_text})", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
 
                     # ---------------------------------------------------------
-                    # 🔥 [서버 전송] 상세 확률(all_probs) 포함하여 전송
+                    # [서버 전송] 상세 확률(all_probs) 포함하여 전송
                     # ---------------------------------------------------------
                     now = time.time()
                     if 'last_send_time' not in st.session_state:
@@ -340,12 +338,13 @@ if run and model is not None:
         confidence_placeholder.metric("Confidence", conf_text)
         
         if is_phone_detected:
-            phone_status_placeholder.error("📱 Phone Detected!")
+            phone_status_placeholder.error("Phone Detected!")
         else:
-            phone_status_placeholder.success("✅ No Phone Detected")
+            phone_status_placeholder.success("No Phone Detected")
 
         frame_window.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     cap.release()
 else:
+
     st.write("Click 'Start Camera' to begin monitoring.")
