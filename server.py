@@ -49,7 +49,7 @@ class AlertData(BaseModel):
 @app.get("/")
 async def show_dashboard():
     if not os.path.exists("dashboard.html"):
-        return HTMLResponse("<h1>🚨 dashboard.html 파일이 같은 폴더에 없습니다!</h1>")
+        return HTMLResponse("<h1> dashboard.html 파일이 같은 폴더에 없습니다</h1>")
     
     with open("dashboard.html", "r", encoding="utf-8") as f:
         return HTMLResponse(content=f.read())
@@ -82,7 +82,7 @@ async def clear_student_monitor_data(name: str):
     return {"msg": f"Monitor data for {name} not found"}, 404
 
 # -----------------------------------------------------------------
-# 🔥 [핵심] 경고 및 로봇 관련 (자동 출동 시스템)
+# [핵심] 경고 및 로봇 관련 (자동 출동 시스템)
 # -----------------------------------------------------------------
 
 # [경고 등록] 학생이 5초 이상 딴짓하면 대시보드가 여기로 보냄
@@ -94,7 +94,7 @@ async def alert_receive_data(jbg: AlertData):
     print(f"🚨 경고 접수: {jbg.name} -> {jbg.status}")
     return {"msg": "Alert Saved"}
 
-# [로봇 조회] 로봇이 "어디로 갈까요?" 하고 계속 물어보는 곳
+# [로봇 조회] 로봇이 어디로 갈지 계속 물어보는 곳
 @app.get("/raspbot")
 async def sendto_raspbot():
     # 경고판(alert_board)을 그대로 줍니다. (명단이 있으면 로봇이 알아서 감)
@@ -103,13 +103,13 @@ async def sendto_raspbot():
 # [처리 완료] 로봇이 가서 경고했으면, 명단에서 지우라고 요청하는 곳
 @app.delete("/alert/{name}")
 async def clear_alert_by_name(name: str):
-    # 🔥 [수정됨] robot_queue가 아니라 alert_board에서 지워야 함!
+    # robot_queue가 아니라 alert_board에서 지우도록 수정
     if name in alert_board:
         del alert_board[name]
-        print(f"🤖 로봇 처리 완료: {name} (명단 삭제)")
+        print(f"로봇 처리 완료: {name} (명단 삭제)")
     return {"msg": f"Alert for {name} cleared"}
 
-# [상황 종료] 선생님이 '상황 종료' 버튼 누르면 싹 초기화
+# [상황 종료] 선생님이 '상황 종료' 버튼 누르면 초기화
 @app.post("/reset")
 async def reset_all_data():
     global alert_board
@@ -117,13 +117,14 @@ async def reset_all_data():
     # 경고판 초기화
     alert_board.clear()
             
-    print("🧹 [System] 상황 종료! 모든 경고가 초기화되었습니다.")
+    print("[System] 상황 종료! 모든 경고가 초기화되었습니다.")
     return {"msg": "All Alerts Cleared"}
 
 # =================================================================
 # 4. 서버 실행
 # =================================================================
 if __name__ == "__main__":
-    print(">>> 🚀 서버 가동 시작! (학생들은 이 컴퓨터의 IP 주소를 입력하세요)")
+    print(">>> 서버 가동 시작 (학생들은 이 컴퓨터의 IP 주소를 입력하세요)")
     # host="0.0.0.0"이어야 외부(학생 노트북)에서 접속 가능
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
